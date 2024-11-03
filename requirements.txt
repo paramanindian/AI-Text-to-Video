@@ -1,0 +1,10 @@
+# Basic dependencies for AI Video Creator
+
+numpy>=1.21.0
+opencv-python>=4.5.0
+moviepy>=1.0.0
+tensorflow>=2.5.0
+scikit-learn>=0.24.0
+Flask>=2.0.0
+pillow
+requests
