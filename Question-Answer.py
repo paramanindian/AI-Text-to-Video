@@ -1,11 +1,5 @@
 ## Create Quiz Videos
 
-prompt = """give me 5 multiple options based questions on indian general knowledge
-
-Please format the results as a JSON object containing an array called "Questions". 
-Each object within the array should have three keys: "Question", with the Question sentence, "Choices", which contains an array of four strings and "Answer", with the Answer.
-Do not include any explanations, only provide a  RFC8259 compliant JSON response without deviation and all key value will be in double quotes"""
-
 import os
 import random
 import textwrap
@@ -89,7 +83,7 @@ def blend_confetti(main_clip, confetti):
         return frame
     return mp.VideoClip(make_frame, duration=main_clip.duration)
 
-def SceneVid(question,choices,answer,MovieID,SceneNo):
+def SceneVid(question,choices,answer,MovieID,SceneNo,cPath):
 #    question = "Which mode is used to open a file for reading in python"
 #    choices = ["r", "w", "a", "x"]
 #    answer = choices[0]
@@ -104,7 +98,7 @@ def SceneVid(question,choices,answer,MovieID,SceneNo):
     print(wrapped_question)
 
     question_clip = mp.TextClip(
-        wrapped_question, fontsize=100, color="white", size=(800, None), bg_color="black"
+        wrapped_question, fontsize=100, color="white", size=(800, None) #, bg_color="black"
     )
     question_clip = question_clip.set_position(("center", 300)).set_duration(total_duration)
 
@@ -185,9 +179,15 @@ def SceneVid(question,choices,answer,MovieID,SceneNo):
     confetti_clip = generate_confetti_clip(duration=3, size=video_size)
     blended_clip = blend_confetti(final_clip, confetti_clip)
 
-    blended_clip.write_videofile("./QuizReel-" + MovieID + SceneNo + ".mp4", fps=24, codec="libx264")
+    blended_clip.write_videofile(cPath + "QuizReel-" + MovieID + SceneNo + ".mp4", fps=24, codec="libx264")
 
 if __name__ == "__main__":
+    prompt = """give me 5 multiple options based questions on general knowledge
+
+Please format the results as a JSON object containing an array called "Questions". 
+Each object within the array should have three keys: "Question", with the Question sentence, "Choices", which contains an array of four strings and "Answer", with the Answer.
+Do not include any explanations, only provide a  RFC8259 compliant JSON response without deviation and all key value will be in double quotes"""
+
     # current date and time
     now = datetime.now()
     t = now.strftime("%H:%M:%S")
@@ -199,15 +199,17 @@ if __name__ == "__main__":
     print("---------------------------")
     AllQuestionAnswer = JSONcontent["Questions"]
     SceneNum = 1
+    FolderPathScene="./../Outputs/QuizScenes/"
+    FolderPathOutput = "./../Outputs/QuizFinal/"
     for Ques in AllQuestionAnswer:
-        SceneVid(Ques['Question'],Ques['Choices'],Ques['Answer'],MoviesID,str(SceneNum))
+        SceneVid(Ques['Question'],Ques['Choices'],Ques['Answer'],MoviesID,str(SceneNum),FolderPathScene)
         SceneNum = SceneNum + 1
     
     vidList = []
     SceneNum = 1
     for Ques in AllQuestionAnswer:
-        vidList.append(VideoFileClip('QuizReel-' + MoviesID + str(SceneNum) + '.mp4'))
+        vidList.append(VideoFileClip(FolderPathScene + 'QuizReel-' + MoviesID + str(SceneNum) + '.mp4'))
         SceneNum = SceneNum + 1
     final = concatenate_videoclips(vidList)
-    final.write_videofile("Quiz-" + MoviesID + "Full.mp4", codec='libx264', audio_codec='aac', fps=25, preset='veryfast')
-    os.system("'Quiz-" + MoviesID + "Full.mp4'")
+    final.write_videofile(FolderPathOutput + "Quiz-" + MoviesID + "Full.mp4", codec='libx264', audio_codec='aac', fps=25, preset='veryfast')
+    os.system('"' + FolderPathOutput + 'Quiz-' + MoviesID + 'Full.mp4"')
