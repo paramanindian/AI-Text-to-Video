@@ -183,7 +183,7 @@ def SceneVid(question,choices,answer,MovieID,SceneNo,cPath):
     blended_clip.write_videofile(cPath + "QuizReel-" + MovieID + SceneNo + ".mp4", fps=24, codec="libx264")
 
 if __name__ == "__main__":
-    prompt = """give me 5 multiple options based questions on general knowledge
+    prompt = """give me 50 multiple options based questions on general knowledge
 
 Please format the results as a JSON object containing an array called "Data". 
 Each object within the array should have five keys: "Question", with the Question sentence, "Choice1", which contains string of first option, "Choice2", which contains string of Second option, "Choice3", which contains string of Third option, "Choice4", which contains string of fourth option and "Answer", with the Answer.
@@ -198,10 +198,11 @@ Do not include any explanations, only provide a  RFC8259 compliant JSON response
     print("test------------------------")
     print(JSONcontent)
     print("---------------------------")
-    JSONcontent['SpreadsheetID']="1r79PqS1lAzfCbzNw1vIH7xtBFXNEUlxv8ctPE5GwtHw"
-    JSONcontent['sheetName']="QnA"
+    JSONcontent['SpreadsheetID'] = "1r79PqS1lAzfCbzNw1vIH7xtBFXNEUlxv8ctPE5GwtHw"
+    JSONcontent['sheetName'] = "QnA"
+    JSONcontent['VideoName'] = "Quiz-" + MoviesID
     AllQuestionAnswer = JSONcontent["Data"]
-    webhook_url = 'https://script.google.com/macros/s/AKfycbxEvF4dyFSlaoqNRdEzZEOfAKW0nIkGbBSSZgjiuZVUNE5iteRP8NupLOKAXcwoN2Q/exec'
+    webhook_url = 'https://script.google.com/macros/s/AKfycbw-hOk7tMZtcUXVW4doDc9ennLNjxTJM9DgOhu2s_ytLm5CMmSLQZj5Cfhc9304GZyr/exec'
     response = requests.post(webhook_url, json=JSONcontent)
     print(response.text)
     SceneNum = 1
