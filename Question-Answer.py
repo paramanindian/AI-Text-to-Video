@@ -1,5 +1,6 @@
 ## Create Quiz Videos
 
+import requests
 import os
 import random
 import textwrap
@@ -184,8 +185,8 @@ def SceneVid(question,choices,answer,MovieID,SceneNo,cPath):
 if __name__ == "__main__":
     prompt = """give me 5 multiple options based questions on general knowledge
 
-Please format the results as a JSON object containing an array called "Questions". 
-Each object within the array should have three keys: "Question", with the Question sentence, "Choices", which contains an array of four strings and "Answer", with the Answer.
+Please format the results as a JSON object containing an array called "Data". 
+Each object within the array should have five keys: "Question", with the Question sentence, "Choice1", which contains string of first option, "Choice2", which contains string of Second option, "Choice3", which contains string of Third option, "Choice4", which contains string of fourth option and "Answer", with the Answer.
 Do not include any explanations, only provide a  RFC8259 compliant JSON response without deviation and all key value will be in double quotes"""
 
     # current date and time
@@ -197,12 +198,18 @@ Do not include any explanations, only provide a  RFC8259 compliant JSON response
     print("test------------------------")
     print(JSONcontent)
     print("---------------------------")
-    AllQuestionAnswer = JSONcontent["Questions"]
+    JSONcontent['SpreadsheetID']="1r79PqS1lAzfCbzNw1vIH7xtBFXNEUlxv8ctPE5GwtHw"
+    JSONcontent['sheetName']="QnA"
+    AllQuestionAnswer = JSONcontent["Data"]
+    webhook_url = 'https://script.google.com/macros/s/AKfycbxEvF4dyFSlaoqNRdEzZEOfAKW0nIkGbBSSZgjiuZVUNE5iteRP8NupLOKAXcwoN2Q/exec'
+    response = requests.post(webhook_url, json=JSONcontent)
+    print(response.text)
     SceneNum = 1
     FolderPathScene="./../Outputs/QuizScenes/"
     FolderPathOutput = "./../Outputs/QuizFinal/"
     for Ques in AllQuestionAnswer:
-        SceneVid(Ques['Question'],Ques['Choices'],Ques['Answer'],MoviesID,str(SceneNum),FolderPathScene)
+        cChoice = [Ques['Choice1'],Ques['Choice2'],Ques['Choice3'],Ques['Choice4']]
+        SceneVid(Ques['Question'],cChoice,Ques['Answer'],MoviesID,str(SceneNum),FolderPathScene)
         SceneNum = SceneNum + 1
     
     vidList = []
