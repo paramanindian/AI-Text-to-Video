@@ -192,7 +192,7 @@ Do not include any explanations, only provide a  RFC8259 compliant JSON response
     # current date and time
     now = datetime.now()
     t = now.strftime("%H:%M:%S")
-    MoviesID = now.strftime("%d%m%Y %H%M%S") + "_"
+    MoviesID = now.strftime("%d%m%Y-%H%M%S") + "_"
 
     JSONcontent = GetContent(prompt)
     print("test------------------------")
